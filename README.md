@@ -1,7 +1,5 @@
 # Workshop 2: Pipeline ETL - Spotify & Grammys
 
-**Estudiantes:** [Tu Nombre] y [Nombre de tu compañero]
-
 Este proyecto automatiza un pipeline ETL con Apache Airflow para integrar datos de canciones de Spotify (desde un archivo CSV) con información de los Premios Grammy (desde una base de datos). El flujo valida la calidad de los datos con Pandera, limpia y realiza el cruce (merge) de ambas fuentes, y guarda el resultado en una base de datos analítica local (SQLite) para su posterior visualización.
 
 ## Arquitectura del Proyecto
@@ -14,7 +12,7 @@ El pipeline sigue un flujo de trabajo paralelo que luego se consolida:
 ## Estructura de Carpetas
 * `dags/`: Contiene `dag_workshop2.py` con la orquestación en Airflow.
 * `scripts/`: Scripts auxiliares de ETL y generación de reportes (`etl_funciones.py`, `02_reporte_dashboard.py`).
-* `notebook/`: Contiene `notebook_final.ipynb` con el análisis exploratorio paso a paso.
+* `notebooks/`: Contiene `notebook_final.ipynb` con el análisis exploratorio paso a paso.
 * `db/`: Bases de datos origen y destino.
 * `data/`: Archivos CSV crudos y carpeta de reportes/output.
 * `images/`: Capturas de evidencia de ejecución y dashboards.

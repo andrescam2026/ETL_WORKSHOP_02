@@ -17,7 +17,7 @@ except ImportError:
 import etl_funciones as etl
 
 argumentos_por_defecto = {
-    "owner": "estudiante_etl",
+    "owner": "Carlos Camacho",
     "retries": 0,
 }
 
