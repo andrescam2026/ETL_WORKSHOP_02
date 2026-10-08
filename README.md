@@ -55,7 +55,7 @@ A partir de los datos procesados se generan diferentes visualizaciones
 sobre popularidad, artistas, géneros, características de audio y
 distribución de canciones.
 
-![Dashboard Spotify & Grammy](data/output/dashboard_spotify_grammys.png)
+![Dashboard Spotify & Grammy](images/dashboard_spotify_grammys.png)
 
 ### Ejecución del pipeline en Airflow
 
