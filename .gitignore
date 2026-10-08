@@ -1,0 +1,9 @@
+data/raw/*
+data/staging/*
+data/output/*
+db/*
+logs/*
+.env
+.venv/
+__pycache__/
+.ipynb_checkpoints/
