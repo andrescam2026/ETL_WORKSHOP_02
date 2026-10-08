@@ -44,70 +44,124 @@ La validación se hace en dos puntos:
 * **Cruce por nombre exacto:** El cruce entre artistas se hace mediante coincidencia de texto normalizado. Diferencias ortográficas menores o colaboraciones (ej. "Artista A feat. Artista B" vs "Artista A") pueden quedar por fuera del cruce.
 * **Escalabilidad:** SQLite no es apto para escrituras concurrentes masivas. En un entorno productivo real, el destino debería ser un Data Warehouse (ej. PostgreSQL, Snowflake).
 
+## Resultados
+
+El pipeline integra la información de Spotify y los Premios Grammy,
+generando un dataset consolidado para el análisis.
+
+### Dashboard
+
+A partir de los datos procesados se generan diferentes visualizaciones
+sobre popularidad, artistas, géneros, características de audio y
+distribución de canciones.
+
+![Dashboard Spotify & Grammy](data/output/dashboard_spotify_grammys.png)
+
+### Ejecución del pipeline en Airflow
+
+El DAG `workshop2_spotify_grammys` permite orquestar las diferentes
+etapas del proceso ETL. La siguiente imagen muestra una ejecución
+exitosa del pipeline:
+
+![DAG Airflow](images/dag_airflow.png)
+
 ## Cómo ejecutarlo
 
-REQUISITOS
+### Requisitos
 
-* Python 3.10+
-* Docker Desktop
-* Git
+Antes de comenzar, asegúrate de tener instalado:
 
-1. CLONAR EL REPOSITORIO
+- Python 3.10+
+- Docker Desktop
+- Git
 
+### 1. Clonar el repositorio
+
+```
 git clone https://github.com/andrescam2026/ETL_WORKSHOP_02.git
 
-cd ETL_WORKSHOP_02
+```
 
-2. VERIFICAR LOS DATOS
+### 2. Verificar los datos
 
-La carpeta data/ debe contener:
+La carpeta `data/` debe contener los archivos necesarios para ejecutar el pipeline:
 
-* spotify_dataset.csv
-* the_grammy_awards.csv
+```text
+data/
+├── spotify_dataset.csv
+└── the_grammy_awards.csv
 
-3. CREAR ENTORNO E INSTALAR DEPENDENCIAS
+```
 
+### 3. Crear el entorno virtual
+
+Crear un entorno virtual para instalar las dependencias del proyecto:
+```
 python -m venv .venv
+```
+Activar el entorno virtual:
 
 Windows:
+```
 .venv\Scripts\activate
-
+```
 Linux / macOS:
+```
 source .venv/bin/activate
-
+```
+Instalar las dependencias:
+```
 pip install -r requirements-local.txt
+```
 
-4. LEVANTAR AIRFLOW
+### 4. Iniciar Airflow
 
+Inicializar Apache Airflow:
+
+```
 docker compose up airflow-init
+```
 
+Una vez finalizada la inicialización, levantar los servicios:
+```
 docker compose up -d
+```
+### 5. Ejecutar el DAG
 
-5. EJECUTAR EL PIPELINE
-
-Abrir en el navegador:
-
+Abrir Apache Airflow desde el navegador:
+```
 http://localhost:8080
+```
+Credenciales de acceso:
 
-Usuario: admin
-Contraseña: admin
+```
+Usuario: airflow
+Contraseña: airflow
+```
 
-Activar el DAG:
+En la interfaz de Airflow:
 
-workshop2_spotify_grammys
+Buscar el DAG workshop2_spotify_grammys.
+Activar el DAG.
+Seleccionar Trigger DAG para iniciar la ejecución.
+Esperar a que todas las tareas finalicen correctamente.
 
-Luego seleccionar "Trigger DAG" para ejecutarlo.
+### 6. Generar el dashboard
 
-6. GENERAR EL REPORTE
+Una vez finalizada correctamente la ejecución del DAG, generar las visualizaciones mediante:
 
-Cuando el DAG termine correctamente:
-
+```
 python scripts/02_reporte_dashboard.py
+```
 
-También puedes consultar:
+También es posible explorar el análisis de forma interactiva mediante el notebook:
+```
+notebooks/notebook_final.ipynb
+```
 
-notebook/notebook_final.ipynb
+### 7. Detener los servicios
 
-7. DETENER LOS SERVICIOS
-
+Cuando hayas terminado de trabajar con el proyecto, puedes detener los servicios de Docker con:
+```
 docker compose down
+```
