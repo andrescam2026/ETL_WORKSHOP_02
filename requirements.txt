@@ -1,2 +1,3 @@
 pandera
 matplotlib
+pandas

@@ -75,10 +75,13 @@ Antes de comenzar, asegúrate de tener instalado:
 - Docker Desktop
 - Git
 
+---
+
 ### 1. Clonar el repositorio
 
-```
-git clone https://github.com/andrescam2026/ETL_WORKSHOP_02.git
+```bash
+git clone [https://github.com/andrescam2026/ETL_WORKSHOP_02.git](https://github.com/andrescam2026/ETL_WORKSHOP_02.git)
+cd ETL_WORKSHOP_02
 
 ```
 
@@ -103,65 +106,73 @@ Activar el entorno virtual:
 
 Windows:
 ```
-.venv\Scripts\activate
+.\.venv\Scripts\Activate.ps1
 ```
+Si se presenta un error de directivas de ejecución en PowerShell, corre primero: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process)
+
 Linux / macOS:
 ```
 source .venv/bin/activate
 ```
-Instalar las dependencias:
+Instalar las dependencias en PowerShell:
 ```
-pip install -r requirements-local.txt
+python -m pip install -r requirements-local.txt
 ```
 
-### 4. Iniciar Airflow
+### 4. Inicializar la Base de Datos de Origen (Paso Obligatorio)
 
-Inicializar Apache Airflow:
+IMPORTANTE: El DAG de Airflow (dag_workshop2.py) requiere que la base de datos db/grammys_origen.db exista antes de ejecutarse.
+
+Debes ejecutar el script de siembra antes de encender o activar la orquestación en Airflow:
+
+```
+python scripts/01_cargar_grammys_origen.py
+```
+Este comando leerá el dataset de Grammys y creará la base de datos SQLite en db/grammys_origen.db con la tabla inicial poblada.
+
+### 5. Iniciar Apache Airflow con Docker
+Inicializar la base de datos y servicios de Apache Airflow:
 
 ```
 docker compose up airflow-init
 ```
-
-Una vez finalizada la inicialización, levantar los servicios:
+Una vez finalizada la inicialización, levantar los contenedores en segundo plano:
 ```
 docker compose up -d
 ```
-### 5. Ejecutar el DAG
 
-Abrir Apache Airflow desde el navegador:
-```
-http://localhost:8080
-```
-Credenciales de acceso:
+### 6. Ejecutar el DAG
+Abrir Apache Airflow desde el navegador web: http://localhost:8080
+
+Credenciales de acceso por defecto:
 
 ```
 Usuario: airflow
 Contraseña: airflow
 ```
 
-En la interfaz de Airflow:
+Pasos en la interfaz:
 
-Buscar el DAG workshop2_spotify_grammys.
-Activar el DAG.
-Seleccionar Trigger DAG para iniciar la ejecución.
-Esperar a que todas las tareas finalicen correctamente.
+Buscar el DAG workshop2_spotify_grammys.   
+Activar el interruptor (Toggle) del DAG.   S
+eleccionar Trigger DAG (botón de play) para iniciar la ejecución.   
+Verificar que todas las tareas se completen en verde (success).  
 
-### 6. Generar el dashboard
 
-Una vez finalizada correctamente la ejecución del DAG, generar las visualizaciones mediante:
+### 7. Generar el dashboard y análisis
+Una vez finalizada correctamente la ejecución del DAG en Airflow, genera las visualizaciones ejecutando:
 
 ```
 python scripts/02_reporte_dashboard.py
 ```
+Este script creará las 6 gráficas individuales y el dashboard consolidado dentro de `data/output/`.  
 
 También es posible explorar el análisis de forma interactiva mediante el notebook:
 ```
 notebooks/notebook_final.ipynb
 ```
-
-### 7. Detener los servicios
-
-Cuando hayas terminado de trabajar con el proyecto, puedes detener los servicios de Docker con:
+### 8. Detener los servicios
+Cuando hayas terminado de trabajar con el proyecto, puedes detener los servicios de Docker ejecutando:
 ```
 docker compose down
 ```
