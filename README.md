@@ -2,7 +2,7 @@
 
 **Estudiantes:** [Tu Nombre] y [Nombre de tu compañero]
 
-Este proyecto implementa un pipeline de datos orquestado con Apache Airflow. El objetivo es extraer información de canciones de Spotify (CSV) y ganadores de premios Grammy (Base de Datos), validar su calidad, transformarlos, cruzarlos y cargarlos en una base de datos local SQLite para su posterior análisis.
+Este proyecto automatiza un pipeline ETL con Apache Airflow para integrar datos de canciones de Spotify (desde un archivo CSV) con información de los Premios Grammy (desde una base de datos). El flujo valida la calidad de los datos con Pandera, limpia y realiza el cruce (merge) de ambas fuentes, y guarda el resultado en una base de datos analítica local (SQLite) para su posterior visualización.
 
 ## Arquitectura del Proyecto
 
@@ -14,10 +14,10 @@ El pipeline sigue un flujo de trabajo paralelo que luego se consolida:
 ## Estructura de Carpetas
 * `dags/`: Contiene `dag_workshop2.py` con la orquestación en Airflow.
 * `scripts/`: Scripts auxiliares de ETL y generación de reportes (`etl_funciones.py`, `02_reporte_dashboard.py`).
-* `notebook/`: Contiene `notebook_final.ipynb` con el análisis exploratorio.
+* `notebook/`: Contiene `notebook_final.ipynb` con el análisis exploratorio paso a paso.
 * `db/`: Bases de datos origen y destino.
 * `data/`: Archivos CSV crudos y carpeta de reportes/output.
-* `images/`: Capturas de evidencia de ejecución.
+* `images/`: Capturas de evidencia de ejecución y dashboards.
 
 ## Validación de calidad de datos (Pandera)
 
@@ -46,11 +46,70 @@ La validación se hace en dos puntos:
 * **Cruce por nombre exacto:** El cruce entre artistas se hace mediante coincidencia de texto normalizado. Diferencias ortográficas menores o colaboraciones (ej. "Artista A feat. Artista B" vs "Artista A") pueden quedar por fuera del cruce.
 * **Escalabilidad:** SQLite no es apto para escrituras concurrentes masivas. En un entorno productivo real, el destino debería ser un Data Warehouse (ej. PostgreSQL, Snowflake).
 
-## Cómo se Ejecuta
+## Cómo ejecutarlo
 
-1. Clonar o descomprimir este proyecto.
-2. Crear un entorno virtual e instalar las dependencias:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # En Windows: .venv\Scripts\activate
-   pip install -r requirements-local.txt
+REQUISITOS
+
+* Python 3.10+
+* Docker Desktop
+* Git
+
+1. CLONAR EL REPOSITORIO
+
+git clone https://github.com/andrescam2026/ETL_WORKSHOP_02.git
+
+cd ETL_WORKSHOP_02
+
+2. VERIFICAR LOS DATOS
+
+La carpeta data/ debe contener:
+
+* spotify_dataset.csv
+* the_grammy_awards.csv
+
+3. CREAR ENTORNO E INSTALAR DEPENDENCIAS
+
+python -m venv .venv
+
+Windows:
+.venv\Scripts\activate
+
+Linux / macOS:
+source .venv/bin/activate
+
+pip install -r requirements-local.txt
+
+4. LEVANTAR AIRFLOW
+
+docker compose up airflow-init
+
+docker compose up -d
+
+5. EJECUTAR EL PIPELINE
+
+Abrir en el navegador:
+
+http://localhost:8080
+
+Usuario: admin
+Contraseña: admin
+
+Activar el DAG:
+
+workshop2_spotify_grammys
+
+Luego seleccionar "Trigger DAG" para ejecutarlo.
+
+6. GENERAR EL REPORTE
+
+Cuando el DAG termine correctamente:
+
+python scripts/02_reporte_dashboard.py
+
+También puedes consultar:
+
+notebook/notebook_final.ipynb
+
+7. DETENER LOS SERVICIOS
+
+docker compose down
